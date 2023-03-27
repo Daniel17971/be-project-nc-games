@@ -30,6 +30,8 @@ describe("GET /api/categories", () => {
   });
 });
 
+describe("GET /api/reviews/:review_id", () => {});
+
 afterAll(() => {
   connection.end();
 });
