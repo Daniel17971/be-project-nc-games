@@ -3,8 +3,8 @@ const { fetchAllCategories } = require("../models/categories.models.js");
 
 exports.selectAllCategories = (req, res, next) => {
   fetchAllCategories()
-    .then((catagories) => {
-      return res.status(200).send(catagories);
+    .then((categories) => {
+      return res.status(200).send({ categories });
     })
     .catch((err) => {
       next(err);
