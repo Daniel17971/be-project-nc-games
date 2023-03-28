@@ -68,7 +68,7 @@ describe("GET /api/reviews/:review_id", () => {
       .get("/api/reviews/2asd2")
       .expect(400)
       .then((response) => {
-        expect(response.body).toEqual({ msg: "Error 400, bad request" });
+        expect(response.body).toEqual({ msg: "Bad Request" });
       });
   });
 });
