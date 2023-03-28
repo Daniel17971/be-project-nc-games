@@ -73,6 +73,38 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
+describe("GET /api/reviews", () => {
+  it("200: gets an array of all the reviews in order descending with an additional comment count property", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then((response) => {
+        const reviews = response.body.reviews;
+        expect(reviews.length).toBe(testData.reviewData.length);
+        reviews.forEach((element) => {
+          expect(element).toMatchObject({
+            review_id: expect.any(Number),
+            title: expect.any(String),
+            category: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+          });
+        });
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: true,
+        });
+      });
+  });
+  it("404:returns status code when no url found", () => {
+    return request(app).get("/api/reveeeeiews").expect(404);
+  });
+});
+
 afterAll(() => {
   connection.end();
 });
