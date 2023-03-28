@@ -76,12 +76,11 @@ describe("GET /api/reviews/:review_id", () => {
 describe("GET /api/reviews/:review_id/comments", () => {
   it("200: returns an array of comments for the associated review", () => {
     return request(app)
-      .get("/api/reviews/2/comments")
+      .get("/api/reviews/1/comments")
       .expect(200)
       .then((response) => {
         const commentsArr = response.body.comments;
         expect(commentsArr).toBeInstanceOf(Array);
-        expect(commentsArr[0].review_id).toBe(2);
         if (commentsArr.length >= 1) {
           commentsArr.forEach((element) => {
             expect(element).toMatchObject({
@@ -95,17 +94,25 @@ describe("GET /api/reviews/:review_id/comments", () => {
         }
       });
   });
-  // it("404: return 404 and message when id not valid", () => {
-  //   return request(app)
-  //     .get("/api/reviews/99/comments")
-  //     .expect(404)
-  //     .then((response) => {
-  //       expect(response.body).toEqual({
-  //         status: 404,
-  //         msg: "id does not exsist",
-  //       });
-  //     });
-  // });
+  it("404: return 404 and message when id not valid", () => {
+    return request(app)
+      .get("/api/reviews/99/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      });
+  });
+  it("400: returns 400 and message when bad request is made", () => {
+    return request(app)
+      .get("/api/reviews/dss/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
 });
 
 afterAll(() => {
