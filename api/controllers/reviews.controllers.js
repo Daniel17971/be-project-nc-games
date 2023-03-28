@@ -15,6 +15,13 @@ exports.selectReview = (req, res, next) => {
     });
 };
 
-exports.selectReviewComments = () => {
-  fetchReviewComments().then();
+exports.selectReviewComments = (req, res, next) => {
+  const { review_id } = req.params;
+  fetchReviewComments(review_id)
+    .then((comments) => {
+      return res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };

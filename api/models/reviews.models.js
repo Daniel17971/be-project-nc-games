@@ -15,4 +15,11 @@ exports.fetchReview = (review_id) => {
     });
 };
 
-exports.fetchReviewComments = () => {};
+exports.fetchReviewComments = (review_id) => {
+  return db
+    .query(`SELECT * FROM comments WHERE review_id=$1`, [review_id])
+    .then((data) => {
+      console.log(data.rows);
+      return data.rows;
+    });
+};
