@@ -73,7 +73,7 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
-describe.only("GET /api/reviews", () => {
+describe("GET /api/reviews", () => {
   it("200: gets an array of all the reviews in order descending with an additional comment count property", () => {
     return request(app)
       .get("/api/reviews")
