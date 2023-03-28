@@ -14,3 +14,5 @@ exports.fetchReview = (review_id) => {
       }
     });
 };
+
+exports.fetchReviewComments = () => {};

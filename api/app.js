@@ -4,7 +4,10 @@ const app = express();
 const {
   selectAllCategories,
 } = require("./controllers/categories.controllers.js");
-const { selectReview } = require("./controllers/reviews.controllers.js");
+const {
+  selectReview,
+  selectReviewComments,
+} = require("./controllers/reviews.controllers.js");
 const {
   customErrorHandler,
   psqlErrorHandler,
@@ -14,6 +17,8 @@ const {
 app.get("/api/categories", selectAllCategories);
 
 app.get("/api/reviews/:review_id", selectReview);
+
+app.get("/api/reviews/:review_id/comments", selectReviewComments);
 
 app.use(customErrorHandler);
 

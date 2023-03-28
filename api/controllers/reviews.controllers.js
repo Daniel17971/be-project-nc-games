@@ -1,4 +1,7 @@
-const { fetchReview } = require("../models/reviews.models.js");
+const {
+  fetchReview,
+  fetchReviewComments,
+} = require("../models/reviews.models.js");
 
 exports.selectReview = (req, res, next) => {
   const { review_id } = req.params;
@@ -10,4 +13,8 @@ exports.selectReview = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.selectReviewComments = () => {
+  fetchReviewComments().then();
 };
