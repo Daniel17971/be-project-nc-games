@@ -80,7 +80,7 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then((response) => {
         const reviews = response.body.reviews;
-        expect(reviews.length).not.toBe(0);
+        expect(reviews.length).toBe(testData.reviewData.length);
         reviews.forEach((element) => {
           expect(element).toMatchObject({
             review_id: expect.any(Number),
@@ -88,7 +88,6 @@ describe("GET /api/reviews", () => {
             category: expect.any(String),
             designer: expect.any(String),
             owner: expect.any(String),
-            review_body: expect.any(String),
             review_img_url: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
@@ -101,7 +100,7 @@ describe("GET /api/reviews", () => {
         });
       });
   });
-  it("404:returns appropriate message non exsistant request", () => {
+  it("404:returns status code when no url found", () => {
     return request(app).get("/api/reveeeeiews").expect(404);
   });
 });
