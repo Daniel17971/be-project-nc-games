@@ -6,6 +6,7 @@ const {
 } = require("./controllers/categories.controllers.js");
 const {
   selectReview,
+  selectReviewComments,
   selectReviews,
 } = require("./controllers/reviews.controllers.js");
 const {
@@ -19,6 +20,8 @@ app.get("/api/categories", selectAllCategories);
 app.get("/api/reviews/:review_id", selectReview);
 
 app.get("/api/reviews", selectReviews);
+
+app.get("/api/reviews/:review_id/comments", selectReviewComments);
 
 app.use(customErrorHandler);
 
