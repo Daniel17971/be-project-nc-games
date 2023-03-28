@@ -57,10 +57,13 @@ describe("GET /api/reviews/:review_id", () => {
       .get("/api/reviews/999")
       .expect(404)
       .then((response) => {
-        expect(response.body).toEqual({ msg: "Error 404, id does not exsist" });
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
       });
   });
-  it("400: returns message when bad request send (invalid characters)", () => {
+  it("400: returns message when bad request sent", () => {
     return request(app)
       .get("/api/reviews/2asd2")
       .expect(400)
