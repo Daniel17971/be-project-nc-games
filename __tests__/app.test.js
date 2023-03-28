@@ -74,27 +74,36 @@ describe("GET /api/reviews/:review_id", () => {
 });
 
 describe("GET /api/reviews/:review_id/comments", () => {
-  it("200: returns an array of comments for the associated review", () => {
+  it("200: returns an empty array of comments for the associated review", () => {
     return request(app)
       .get("/api/reviews/1/comments")
       .expect(200)
       .then((response) => {
         const commentsArr = response.body.comments;
-        expect(commentsArr).toBeInstanceOf(Array);
-        if (commentsArr.length >= 1) {
-          commentsArr.forEach((element) => {
-            expect(element).toMatchObject({
-              body: expect.any(String),
-              votes: expect.any(Number),
-              comment_id: expect.any(Number),
-              review_id: expect.any(Number),
-              author: expect.any(String),
-            });
-          });
-        }
+
+        expect(commentsArr).toEqual([]);
       });
   });
-  it("404: return 404 and message when id not valid", () => {
+  it("200: returns an array of comments for the associated review", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then((response) => {
+        const commentsArr = response.body.comments;
+        expect(commentsArr).toBeInstanceOf(Array);
+        commentsArr.forEach((element) => {
+          expect(element.review_id).toBe(2);
+          expect(element).toMatchObject({
+            body: expect.any(String),
+            votes: expect.any(Number),
+            comment_id: expect.any(Number),
+            review_id: expect.any(Number),
+            author: expect.any(String),
+          });
+        });
+      });
+  });
+  it("404: return 404 and message when id is not found", () => {
     return request(app)
       .get("/api/reviews/99/comments")
       .expect(404)
