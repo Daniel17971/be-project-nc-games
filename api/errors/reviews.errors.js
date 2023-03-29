@@ -11,7 +11,8 @@ exports.customErrorHandler = (err, req, res, next) => {
 
 exports.psqlErrorHandler = (err, req, res, next) => {
   const { code } = err;
-  if (code === "22P02") {
+
+  if (code === "22P02" || code === "23502") {
     res.status(400).send({ msg: "Bad Request" });
   } else {
     next(err);

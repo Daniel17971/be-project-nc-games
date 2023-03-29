@@ -131,6 +131,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
             comment_id: expect.any(Number),
             review_id: expect.any(Number),
             author: expect.any(String),
+            created_at: expect.any(String),
           });
         });
       });
@@ -149,6 +150,42 @@ describe("GET /api/reviews/:review_id/comments", () => {
   it("400: returns 400 and message when bad request is made", () => {
     return request(app)
       .get("/api/reviews/dss/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+});
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  it("201: creates and posts a new comment for a particular review", () => {
+    const newComment = { username: "dav3rid", body: "it was ok!" };
+
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        console.log(response.body);
+        const comment = response.body.comment[0];
+        expect(comment.author).toBe("dav3rid");
+        expect(comment.body).toBe("it was ok!");
+        expect(comment.review_id).toBe(2);
+        expect(comment).toMatchObject({
+          author: expect.any(String),
+          created_at: expect.any(Number),
+          votes: expect.any(Number),
+          body: expect.any(String),
+          review_id: expect.any(Number),
+          created_at: expect.any(String),
+          comment_id: expect.any(Number),
+        });
+      });
+  });
+  it("400: bad request sent", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({ author: "dav3rid", body: "it was ok!", cat: "georege" })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({ msg: "Bad Request" });
