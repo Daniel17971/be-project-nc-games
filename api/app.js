@@ -9,6 +9,7 @@ const {
   selectReviewComments,
   selectReviews,
   addReviewComment,
+  updateReviewVotes,
 } = require("./controllers/reviews.controllers.js");
 const {
   customErrorHandler,
@@ -27,6 +28,8 @@ app.get("/api/reviews", selectReviews);
 app.get("/api/reviews/:review_id/comments", selectReviewComments);
 
 app.post("/api/reviews/:review_id/comments", addReviewComment);
+
+app.patch("/api/reviews/:review_id", updateReviewVotes);
 
 app.use(customErrorHandler);
 

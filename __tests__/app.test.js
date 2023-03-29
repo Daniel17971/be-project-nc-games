@@ -259,6 +259,74 @@ describe("POST /api/reviews/:review_id/comments", () => {
   });
 });
 
+describe("PATCH /api/review/:review_id, updates votes", () => {
+  it("200: updates the votes on a review and returns the updated review", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: 3 })
+      .expect(200)
+      .then((response) => {
+        const review = response.body.updatedReview;
+        expect(review.votes).toBe(4);
+      });
+  });
+  it("200: updates votes if negative", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: -3 })
+      .expect(200)
+      .then((response) => {
+        const review = response.body.updatedReview;
+        expect(review.votes).toBe(-2);
+      });
+  });
+  it("400: bad request the incriment votes object has invalid value ", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: "alpha" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          msg: "Bad Request",
+        });
+      });
+  });
+  it("400: bad request the incriment votes object has key name", () => {
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votttes: 12 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          msg: "Bad Request",
+        });
+      });
+  });
+  it("404: returns id not found for valid but missing id", () => {
+    return request(app)
+      .patch("/api/reviews/90")
+      .send({ inc_votes: 2 })
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      });
+  });
+  it("400: returns bad request when invalid id entered", () => {
+    return request(app)
+      .patch("/api/reviews/sads4")
+      .send({ inc_votes: 2 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          msg: "Bad Request",
+        });
+      });
+  });
+});
+
 afterAll(() => {
   connection.end();
 });

@@ -73,3 +73,17 @@ exports.insertReviewComment = (reqBody, review_id) => {
       return data.rows[0];
     });
 };
+
+exports.alterReviewVote = (votePatch, review_id) => {
+  return db
+    .query(
+      `UPDATE reviews
+  SET votes=votes+$1
+  WHERE review_id=$2
+  RETURNING *; `,
+      [votePatch, review_id]
+    )
+    .then((data) => {
+      return data.rows[0];
+    });
+};

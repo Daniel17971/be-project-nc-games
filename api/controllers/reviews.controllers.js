@@ -1,9 +1,11 @@
+const { response } = require("../app.js");
 const {
   fetchReview,
   fetchReviewComments,
   checkExsists,
   fetchOrderedReviews,
   insertReviewComment,
+  alterReviewVote,
 } = require("../models/reviews.models.js");
 
 exports.selectReview = (req, res, next) => {
@@ -62,6 +64,28 @@ exports.addReviewComment = (req, res, next) => {
       res.status(201).send({ comment });
     })
     .catch((err) => {
+      next(err);
+    });
+};
+
+exports.updateReviewVotes = (req, res, next) => {
+  const votePatch = req.body.inc_votes;
+  const review_id = req.params.review_id;
+
+  alterReviewVote(votePatch, review_id)
+    .then((updatedReview) => {
+      return Promise.all([
+        checkExsists("reviews", "review_id", review_id),
+        updatedReview,
+      ]);
+    })
+    .then((promise) => {
+      const updatedReview = promise[1];
+
+      res.status(200).send({ updatedReview });
+    })
+    .catch((err) => {
+      console.log(err);
       next(err);
     });
 };
