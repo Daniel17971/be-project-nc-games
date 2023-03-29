@@ -266,7 +266,7 @@ describe("PATCH /api/review/:review_id, updates votes", () => {
       .send({ inc_votes: 3 })
       .expect(200)
       .then((response) => {
-        const review = response.body.updatedReview;
+        const review = response.body.review;
         expect(review.votes).toBe(4);
       });
   });
@@ -276,7 +276,7 @@ describe("PATCH /api/review/:review_id, updates votes", () => {
       .send({ inc_votes: -3 })
       .expect(200)
       .then((response) => {
-        const review = response.body.updatedReview;
+        const review = response.body.review;
         expect(review.votes).toBe(-2);
       });
   });

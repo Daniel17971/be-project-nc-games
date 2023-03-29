@@ -80,12 +80,11 @@ exports.updateReviewVotes = (req, res, next) => {
       ]);
     })
     .then((promise) => {
-      const updatedReview = promise[1];
+      const review = promise[1];
 
-      res.status(200).send({ updatedReview });
+      res.status(200).send({ review });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
