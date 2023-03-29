@@ -3,6 +3,7 @@ const {
   fetchReviewComments,
   checkExsists,
   fetchOrderedReviews,
+  insertReviewComment,
 } = require("../models/reviews.models.js");
 
 exports.selectReview = (req, res, next) => {
@@ -47,6 +48,18 @@ exports.selectReviewComments = (req, res, next) => {
       } else {
         res.status(200).send({ comments });
       }
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.addReviewComment = (req, res, next) => {
+  const reqBody = req.body;
+  const review_id = req.params.review_id;
+  insertReviewComment(reqBody, review_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);

@@ -49,14 +49,27 @@ exports.checkExsists = (table, column, value) => {
   const queryString = format(`SELECT * FROM %I WHERE %I=$1`, table, column);
   return db.query(queryString, [value]).then((data) => {
     if (data.rows.length === 0) {
-      return Promise.reject[
-        {
-          status: 404,
-          msg: "id does not exsist",
-        }
-      ];
+      return Promise.reject({
+        status: 404,
+        msg: "id does not exsist",
+      });
     } else {
       return data.rows;
     }
   });
+};
+
+exports.insertReviewComment = (reqBody, review_id) => {
+  return db
+    .query(
+      `INSERT INTO comments
+  (author, body, review_id)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *;`,
+      [reqBody.username, reqBody.body, review_id]
+    )
+    .then((data) => {
+      return data.rows[0];
+    });
 };
