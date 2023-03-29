@@ -181,7 +181,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
         });
       });
   });
-  it("400: bad request sent", () => {
+  it("400: bad request sent incorrect property name", () => {
     return request(app)
       .post("/api/reviews/2/comments")
       .send({ author: "dav3rid", body: "it was ok!" })
@@ -242,14 +242,14 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .then((response) => {
         expect(response.body).toEqual({
           status: 404,
-          msg: "id does not exsist",
+          msg: "username does not exsist",
         });
       });
   });
   it("400: bad request no body property", () => {
     return request(app)
       .post("/api/reviews/2/comments")
-      .send({ username: "dav3rid", cat: "tom" })
+      .send({ username: "dav3rid" })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({

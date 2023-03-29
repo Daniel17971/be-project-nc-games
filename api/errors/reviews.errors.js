@@ -13,7 +13,7 @@ exports.customErrorHandler = (err, req, res, next) => {
   }
   if (/author/.test(err.detail)) {
     err.status = 404;
-    err.msg = "id does not exsist";
+    err.msg = "username does not exsist";
     const { status, msg } = err;
     res.status(404).send({ status, msg });
   } else {
