@@ -70,6 +70,6 @@ exports.insertReviewComment = (reqBody, review_id) => {
       [reqBody.username, reqBody.body, review_id]
     )
     .then((data) => {
-      return data.rows;
+      return data.rows[0];
     });
 };

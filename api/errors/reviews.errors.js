@@ -4,6 +4,18 @@ exports.customErrorHandler = (err, req, res, next) => {
   const { status, msg } = err;
   if (status === 404) {
     res.status(404).send({ status, msg });
+  }
+  if (/review_id/.test(err.detail)) {
+    err.status = 404;
+    err.msg = "id does not exsist";
+    const { status, msg } = err;
+    res.status(404).send({ status, msg });
+  }
+  if (/author/.test(err.detail)) {
+    err.status = 404;
+    err.msg = "id does not exsist";
+    const { status, msg } = err;
+    res.status(404).send({ status, msg });
   } else {
     next(err);
   }

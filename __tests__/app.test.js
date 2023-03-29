@@ -166,7 +166,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then((response) => {
-        const comment = response.body.comment[0];
+        const comment = response.body.comment;
         expect(comment.author).toBe("dav3rid");
         expect(comment.body).toBe("it was ok!");
         expect(comment.review_id).toBe(2);
@@ -184,10 +184,77 @@ describe("POST /api/reviews/:review_id/comments", () => {
   it("400: bad request sent", () => {
     return request(app)
       .post("/api/reviews/2/comments")
-      .send({ author: "dav3rid", body: "it was ok!", cat: "georege" })
+      .send({ author: "dav3rid", body: "it was ok!" })
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  it("201: post even with addition non-important properties", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "dav3rid", body: "it was ok!", cat: "tom" })
+      .expect(201)
+      .then((response) => {
+        const comment = response.body.comment;
+        expect(comment.author).toBe("dav3rid");
+        expect(comment.body).toBe("it was ok!");
+        expect(comment.review_id).toBe(1);
+        expect(comment).toMatchObject({
+          author: expect.any(String),
+          created_at: expect.any(Number),
+          votes: expect.any(Number),
+          body: expect.any(String),
+          review_id: expect.any(Number),
+          created_at: expect.any(String),
+          comment_id: expect.any(Number),
+        });
+      });
+  });
+  it("404: valid id but not found", () => {
+    return request(app)
+      .post("/api/reviews/99/comments")
+      .send({ username: "dav3rid", body: "it was ok!" })
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      });
+  });
+  it("400: bad request invalid id", () => {
+    return request(app)
+      .post("/api/reviews/s3d/comments")
+      .send({ username: "dav3rid", body: "it was ok!" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          msg: "Bad Request",
+        });
+      });
+  });
+  it("404: username not in database", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({ username: "daniel2324", body: "it was ok!" })
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      });
+  });
+  it("400: bad request no body property", () => {
+    return request(app)
+      .post("/api/reviews/2/comments")
+      .send({ username: "dav3rid", cat: "tom" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          msg: "Bad Request",
+        });
       });
   });
 });
