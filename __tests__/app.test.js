@@ -166,7 +166,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .send(newComment)
       .expect(201)
       .then((response) => {
-        console.log(response.body);
         const comment = response.body.comment[0];
         expect(comment.author).toBe("dav3rid");
         expect(comment.body).toBe("it was ok!");
