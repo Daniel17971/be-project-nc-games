@@ -359,7 +359,7 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   it("200: responds with an array of users with properties username,name and url", () => {
     return request(app)
       .get("/api/users")
