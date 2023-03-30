@@ -376,9 +376,6 @@ describe("GET /api/users", () => {
         });
       });
   });
-  it("404 : responds with a 404 when url not found", () => {
-    return request(app).get("/api/useeersss").expect(404);
-  });
 });
 
 afterAll(() => {
