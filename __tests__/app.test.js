@@ -359,16 +359,27 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-// describe("GET /api/users", () => {
-//   it("200: responds with an array of users with properties username,name and url", () => {
-//     return request(app)
-//       .get("/api/users")
-//       .expect(200)
-//       .then((response) => {
-//         const users = response.body.users;
-//       });
-//   });
-// });
+describe.only("GET /api/users", () => {
+  it("200: responds with an array of users with properties username,name and url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        const users = response.body.users;
+        expect(users.length).toBe(testData.userData.length);
+        users.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String),
+          });
+        });
+      });
+  });
+  it("404 : responds with a 404 when url not found", () => {
+    return request(app).get("/api/useeersss").expect(404);
+  });
+});
 
 afterAll(() => {
   connection.end();
