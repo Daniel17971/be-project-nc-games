@@ -378,7 +378,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("GET /api/reviews?query=value", () => {
+describe("GET /api/reviews?query=value", () => {
   it("200: can select all reviews for a category /api/reviews?category=dexterity", () => {
     return request(app)
       .get("/api/reviews?category=dexterity")
