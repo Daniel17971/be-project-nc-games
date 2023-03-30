@@ -28,19 +28,7 @@ exports.fetchOrderedReviews = (query) => {
       }
       return data.rows;
     });
-  } else if (
-    Object.keys(query)[0] === "sort_by" &&
-    [
-      `category`,
-      `title,review_id`,
-      `comment_count`,
-      `created_at`,
-      `owner`,
-      `review_img_url`,
-      `votes`,
-      `designer`,
-    ].includes(query.sort_by)
-  ) {
+  } else if (Object.keys(query)[0] === "sort_by") {
     return db.query(formatReviewsQuery(query.sort_by, "DESC")).then((data) => {
       if (data.rowCount === 0) {
         return Promise.reject({
@@ -62,7 +50,7 @@ exports.fetchOrderedReviews = (query) => {
         }
         return data.rows;
       });
-  } else {
+  } else if (Object.keys(query).length === 0) {
     return db.query(formatReviewsQuery("created_at", "DESC")).then((data) => {
       if (data.rowCount === 0) {
         return Promise.reject({
@@ -95,6 +83,43 @@ exports.checkExsists = (table, column, value) => {
       return data.rows;
     }
   });
+};
+
+exports.checkColumnExsists = (column, table) => {
+  if (Object.keys(column).length === 0) {
+    return true;
+  } else {
+    const queryString = format(`SELECT %I FROM %I `, column, table);
+    return db.query(queryString).then((data) => {
+      if (data.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      } else {
+        return data.rows;
+      }
+    });
+  }
+};
+
+exports.checkCategoryExsists = (category) => {
+  if (Object.keys(category).length === 0) {
+    return category;
+  } else {
+    return db
+      .query(`SELECT * FROM reviews WHERE category=$1`, [category.category])
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        } else {
+          return data.rows;
+        }
+      });
+  }
 };
 
 exports.insertReviewComment = (reqBody, review_id) => {

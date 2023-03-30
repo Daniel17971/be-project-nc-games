@@ -15,9 +15,9 @@ exports.customErrorHandler = (err, req, res, next) => {
     err.msg = "username does not exsist";
     const { status, msg } = err;
     res.status(404).send({ status, msg });
-  } else if (Object.keys(req.query).length !== 0) {
+  } else if (Object.keys(req.query)[0] === "sort_by") {
     err.status = 404;
-    err.msg = "username does not exsist";
+    err.msg = "id does not exsist";
     const { status, msg } = err;
     res.status(404).send({ status, msg });
   } else {
@@ -27,7 +27,11 @@ exports.customErrorHandler = (err, req, res, next) => {
 
 exports.psqlErrorHandler = (err, req, res, next) => {
   const { code } = err;
-  if (code === "22P02" || code === "23502") {
+  if (
+    code === "22P02" ||
+    code === "23502" ||
+    Object.keys(req.query).length !== 0
+  ) {
     res.status(400).send({ msg: "Bad Request" });
   } else {
     next(err);

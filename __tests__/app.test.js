@@ -419,25 +419,31 @@ describe("GET /api/reviews?query=value", () => {
         });
       });
   });
-  it("400: bad request when query asks for not real category etc", () => {
+  it("404: not found when query asks for not real category etc", () => {
     return request(app)
-      .get("/api/reviews/category=notreal")
-      .expect(400)
+      .get("/api/reviews?category=notreal")
+      .expect(404)
       .then((response) => {
-        expect(response.body).toEqual({ msg: "Bad Request" });
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
       });
   });
-  it("400: bad request when query asks for not real sort by param etc", () => {
+  it("404: not found when query asks for not real sort by param etc", () => {
     return request(app)
-      .get("/api/reviews/sort_by=fakequery")
-      .expect(400)
+      .get("/api/reviews?sort_by=fakequery")
+      .expect(404)
       .then((response) => {
-        expect(response.body).toEqual({ msg: "Bad Request" });
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
       });
   });
   it("400: bad request when incorrect query", () => {
     return request(app)
-      .get("/api/reviews/badquery=asc")
+      .get("/api/reviews?badquery=asc")
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({ msg: "Bad Request" });
