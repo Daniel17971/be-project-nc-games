@@ -16,25 +16,99 @@ exports.fetchReview = (review_id) => {
     });
 };
 
-exports.fetchOrderedReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.review_id,reviews.title,reviews.category,reviews.designer,reviews.owner,reviews.review_img_url,
+exports.fetchOrderedReviews = (query) => {
+  if (Object.keys(query)[0] === "order") {
+    return db
+      .query(
+        `SELECT reviews.review_id,reviews.title,reviews.category,reviews.designer,reviews.owner,reviews.review_img_url,
+    reviews.created_at,reviews.votes 
+   , count(comments.review_id) AS comment_count
+FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id
+GROUP BY reviews.review_id 
+ORDER BY reviews.created_at ASC`
+      )
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        }
+        return data.rows;
+      });
+  } else if (
+    Object.keys(query)[0] === "sort_by" &&
+    [
+      `category`,
+      `title,review_id`,
+      `comment_count`,
+      `created_at`,
+      `owner`,
+      `review_img_url`,
+      `votes`,
+      `designer`,
+    ].includes(query.sort_by)
+  ) {
+    return db
+      .query(
+        `SELECT reviews.review_id,reviews.title,reviews.category,reviews.designer,reviews.owner,reviews.review_img_url,
+      reviews.created_at,reviews.votes 
+     , count(comments.review_id) AS comment_count
+ FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id 
+ GROUP BY reviews.review_id 
+ ORDER BY reviews.${query.sort_by} DESC
+`
+      )
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        }
+        return data.rows;
+      });
+  } else if (Object.keys(query)[0] === "category") {
+    return db
+      .query(
+        `SELECT reviews.review_id,reviews.title,reviews.category,reviews.designer,reviews.owner,reviews.review_img_url,
+      reviews.created_at,reviews.votes 
+     , count(comments.review_id) AS comment_count
+ FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id WHERE reviews.category=$1
+ GROUP BY reviews.review_id 
+ ORDER BY reviews.created_at DESC
+`,
+        [query.category]
+      )
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        }
+        return data.rows;
+      });
+  } else {
+    return db
+      .query(
+        `SELECT reviews.review_id,reviews.title,reviews.category,reviews.designer,reviews.owner,reviews.review_img_url,
        reviews.created_at,reviews.votes 
       , count(comments.review_id) AS comment_count
   FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id
   GROUP BY reviews.review_id 
   ORDER BY reviews.created_at DESC`
-    )
-    .then((data) => {
-      if (data.rowCount === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "id does not exsist",
-        });
-      }
-      return data.rows;
-    });
+      )
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        }
+        return data.rows;
+      });
+  }
 };
 
 exports.fetchReviewComments = (review_id) => {
