@@ -327,6 +327,38 @@ describe("PATCH /api/review/:review_id, updates votes", () => {
   });
 });
 
+describe("DELETE /api/comments/:comment_id", () => {
+  it("204: deletes a comment and responsds with 204 and no content", () => {
+    return request(app)
+      .delete("/api/comments/2")
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
+  it("404: responds with not found when id valid but not present", () => {
+    return request(app)
+      .delete("/api/comments/99")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      });
+  });
+  it("400: responds with bad request when invalid id input", () => {
+    return request(app)
+      .delete("/api/comments/9fas32")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({
+          msg: "Bad Request",
+        });
+      });
+  });
+});
+
 afterAll(() => {
   connection.end();
 });

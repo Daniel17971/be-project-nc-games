@@ -48,7 +48,7 @@ exports.fetchReviewComments = (review_id) => {
 exports.checkExsists = (table, column, value) => {
   const queryString = format(`SELECT * FROM %I WHERE %I=$1`, table, column);
   return db.query(queryString, [value]).then((data) => {
-    if (data.rows.length === 0) {
+    if (data.rowCount === 0) {
       return Promise.reject({
         status: 404,
         msg: "id does not exsist",
