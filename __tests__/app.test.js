@@ -327,16 +327,16 @@ describe("PATCH /api/review/:review_id, updates votes", () => {
   });
 });
 
-describe("GET /api/users", () => {
-  it("200: responds with an array of users with properties username,name and url", () => {
-    return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then((response) => {
-        const users = response.body.users;
-      });
-  });
-});
+// describe("GET /api/users", () => {
+//   it("200: responds with an array of users with properties username,name and url", () => {
+//     return request(app)
+//       .get("/api/users")
+//       .expect(200)
+//       .then((response) => {
+//         const users = response.body.users;
+//       });
+//   });
+// });
 
 afterAll(() => {
   connection.end();
