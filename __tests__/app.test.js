@@ -385,7 +385,7 @@ describe("GET /api/reviews?query=value", () => {
       .expect(200)
       .then((response) => {
         const reviews = response.body.reviews;
-
+        expect(!reviews.length).toBe(false);
         let flag = true;
         reviews.forEach((review) => {
           if (review.category !== "dexterity") {
