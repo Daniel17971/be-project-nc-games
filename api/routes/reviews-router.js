@@ -8,14 +8,13 @@ const {
 
 const reviewsRouter = require("express").Router();
 
-reviewsRouter.get("/:review_id", selectReview);
+reviewsRouter.route("/:review_id").get(selectReview).patch(updateReviewVotes);
 
 reviewsRouter.get("/", selectReviews);
 
-reviewsRouter.get("/:review_id/comments", selectReviewComments);
-
-reviewsRouter.post("/:review_id/comments", addReviewComment);
-
-reviewsRouter.patch("/:review_id", updateReviewVotes);
+reviewsRouter
+  .route("/:review_id/comments")
+  .get(selectReviewComments)
+  .post(addReviewComment);
 
 module.exports = reviewsRouter;
