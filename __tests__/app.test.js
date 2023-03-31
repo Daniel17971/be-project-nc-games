@@ -38,9 +38,8 @@ describe("GET /api/reviews/:review_id", () => {
       .expect(200)
       .then((response) => {
         const review = response.body.review;
-        expect(review[0].review_id).toBe(1);
-        expect(review.length).toBe(1);
-        expect(review[0]).toMatchObject({
+        expect(review.review_id).toBe(1);
+        expect(review).toMatchObject({
           review_id: expect.any(Number),
           title: expect.any(String),
           category: expect.any(String),
@@ -459,6 +458,34 @@ describe("GET /api", () => {
       .expect(200)
       .then((response) => {
         expect(response.body.endpoints).toEqual(endpointsData);
+      });
+  });
+});
+
+describe("GET /api/users/:username", () => {
+  it("200: returns a user", () => {
+    return request(app)
+      .get("/api/users/mallionaire")
+      .expect(200)
+      .then((response) => {
+        const user = response.body.user;
+        expect(user).toEqual({
+          username: "mallionaire",
+          name: "haz",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        });
+      });
+  });
+  it("404: when username not found", () => {
+    return request(app)
+      .get("/api/users/not8There")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "username does not exsist",
+        });
       });
   });
 });
