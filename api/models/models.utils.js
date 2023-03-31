@@ -35,3 +35,8 @@ function formatReviewsQuery(
 }
 
 module.exports = { formatReviewsQuery };
+
+`SELECT reviews.* 
+, count(comments.review_id) AS comment_count
+FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id 
+GROUP BY reviews.review_id ;`;
