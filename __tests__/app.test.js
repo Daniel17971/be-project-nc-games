@@ -490,6 +490,49 @@ describe("GET /api/users/:username", () => {
   });
 });
 
+describe("PATCH /api/comments/:comment_id", () => {
+  it("200: updates the vote property on a comment and returns updated property", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: 3 })
+      .expect(200)
+      .then((response) => {
+        const comment = response.body.comment;
+        expect(comment.votes).toBe(19);
+      });
+  });
+  it("404: when id is not found but valid", () => {
+    return request(app)
+      .patch("/api/comments/200")
+      .send({ inc_votes: 3 })
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "comment not found",
+        });
+      });
+  });
+  it("400: bad request when bad object sent", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .send({ inc_votes: "alpha" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  it("400: bad request when bad object key used", () => {
+    return request(app)
+      .patch("/api/comments/2")
+      .send({ inc_voddtes: 2 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+});
+
 afterAll(() => {
   connection.end();
 });
