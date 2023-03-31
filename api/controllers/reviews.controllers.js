@@ -6,6 +6,8 @@ const {
   fetchOrderedReviews,
   insertReviewComment,
   alterReviewVote,
+  checkColumnExsists,
+  checkCategoryExsists,
 } = require("../models/reviews.models.js");
 
 exports.selectReview = (req, res, next) => {
@@ -21,7 +23,9 @@ exports.selectReview = (req, res, next) => {
 };
 
 exports.selectReviews = (req, res, next) => {
-  fetchOrderedReviews()
+  const query = req.query;
+
+  fetchOrderedReviews(query)
     .then((reviews) => {
       return res.status(200).send({ reviews });
     })

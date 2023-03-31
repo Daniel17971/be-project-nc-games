@@ -1,5 +1,6 @@
 const format = require("pg-format");
 const db = require("../../db/connection.js");
+const { formatReviewsQuery } = require("./models.utils.js");
 
 exports.fetchReview = (review_id) => {
   return db
@@ -16,17 +17,9 @@ exports.fetchReview = (review_id) => {
     });
 };
 
-exports.fetchOrderedReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.review_id,reviews.title,reviews.category,reviews.designer,reviews.owner,reviews.review_img_url,
-       reviews.created_at,reviews.votes 
-      , count(comments.review_id) AS comment_count
-  FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id
-  GROUP BY reviews.review_id 
-  ORDER BY reviews.created_at DESC`
-    )
-    .then((data) => {
+exports.fetchOrderedReviews = (query) => {
+  if (Object.keys(query)[0] === "order") {
+    return db.query(formatReviewsQuery()).then((data) => {
       if (data.rowCount === 0) {
         return Promise.reject({
           status: 404,
@@ -35,6 +28,39 @@ exports.fetchOrderedReviews = () => {
       }
       return data.rows;
     });
+  } else if (Object.keys(query)[0] === "sort_by") {
+    return db.query(formatReviewsQuery(query.sort_by, "DESC")).then((data) => {
+      if (data.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      }
+      return data.rows;
+    });
+  } else if (Object.keys(query)[0] === "category") {
+    return db
+      .query(formatReviewsQuery("created_at", "DESC", false), [query.category])
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        }
+        return data.rows;
+      });
+  } else if (Object.keys(query).length === 0) {
+    return db.query(formatReviewsQuery("created_at", "DESC")).then((data) => {
+      if (data.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      }
+      return data.rows;
+    });
+  }
 };
 
 exports.fetchReviewComments = (review_id) => {
@@ -57,6 +83,43 @@ exports.checkExsists = (table, column, value) => {
       return data.rows;
     }
   });
+};
+
+exports.checkColumnExsists = (column, table) => {
+  if (Object.keys(column).length === 0) {
+    return true;
+  } else {
+    const queryString = format(`SELECT %I FROM %I `, column, table);
+    return db.query(queryString).then((data) => {
+      if (data.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      } else {
+        return data.rows;
+      }
+    });
+  }
+};
+
+exports.checkCategoryExsists = (category) => {
+  if (Object.keys(category).length === 0) {
+    return category;
+  } else {
+    return db
+      .query(`SELECT * FROM reviews WHERE category=$1`, [category.category])
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        } else {
+          return data.rows;
+        }
+      });
+  }
 };
 
 exports.insertReviewComment = (reqBody, review_id) => {

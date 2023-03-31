@@ -378,6 +378,79 @@ describe("GET /api/users", () => {
   });
 });
 
+describe("GET /api/reviews?query=value", () => {
+  it("200: can select all reviews for a category /api/reviews?category=dexterity", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then((response) => {
+        const reviews = response.body.reviews;
+        expect(!reviews.length).toBe(false);
+        let flag = true;
+        reviews.forEach((review) => {
+          if (review.category !== "dexterity") {
+            flag = false;
+          }
+        });
+        expect(flag).toBe(true);
+      });
+  });
+  it("200: sort_by query sorts by any valid column, defaults to date", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=votes")
+      .expect(200)
+      .then((response) => {
+        const reviews = response.body.reviews;
+        expect(reviews).toBeSortedBy("votes", {
+          descending: true,
+          coerce: true,
+        });
+      });
+  });
+  it("200: order query which defaults to desc can be changed to asc", () => {
+    return request(app)
+      .get("/api/reviews?order=asc")
+      .expect(200)
+      .then((response) => {
+        const reviews = response.body.reviews;
+        expect(reviews).toBeSortedBy("created_at", {
+          descending: false,
+          coerce: true,
+        });
+      });
+  });
+  it("404: not found when query asks for not real category etc", () => {
+    return request(app)
+      .get("/api/reviews?category=notreal")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      });
+  });
+  it("404: not found when query asks for not real sort by param etc", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=fakequery")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      });
+  });
+  it("400: bad request when incorrect query", () => {
+    return request(app)
+      .get("/api/reviews?badquery=asc")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+});
+
 afterAll(() => {
   connection.end();
 });
