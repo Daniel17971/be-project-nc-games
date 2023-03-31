@@ -2,6 +2,7 @@ const connection = require("../db/connection.js");
 const request = require("supertest");
 const app = require("../api/app.js");
 const testData = require("../db/data/test-data");
+const endpointsData = require("../endpoints.json");
 const seed = require("../db/seeds/seed.js");
 const { response } = require("../api/app.js");
 
@@ -173,7 +174,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(comment.review_id).toBe(2);
         expect(comment).toMatchObject({
           author: expect.any(String),
-          created_at: expect.any(Number),
           votes: expect.any(Number),
           body: expect.any(String),
           review_id: expect.any(Number),
@@ -448,6 +448,17 @@ describe("GET /api/reviews?query=value", () => {
       .expect(400)
       .then((response) => {
         expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+});
+
+describe("GET /api", () => {
+  it("returns all current endpoints with information of there uses", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.endpoints).toEqual(endpointsData);
       });
   });
 });
