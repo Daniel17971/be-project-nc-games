@@ -457,10 +457,7 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-        expect(response.body.endpoints["GET /api"]).toEqual({
-          description:
-            "serves up a json representation of all the available endpoints of the api",
-        });
+        expect(response.body.endpoints).toEqual(endpointsData);
       });
   });
 });
