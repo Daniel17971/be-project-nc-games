@@ -19,26 +19,23 @@ const {
 const { removeComment } = require("./controllers/comments.controllers.js");
 const { selectAllUsers } = require("./controllers/users.controllers.js");
 const { selectEndpoints } = require("./controllers/api.controllers.js");
+const apiRouter = require("./routes/api-router.js");
+const usersRouter = require("./routes/users-router.js");
+const commentsRouter = require("./routes/comments-router.js");
+const reviewsRouter = require("./routes/reviews-router.js");
+const categoriesRouter = require("./routes/categories-router.js");
 
 app.use(express.json());
 
-app.get("/api/categories", selectAllCategories);
+app.use("/api", apiRouter);
 
-app.get("/api/reviews/:review_id", selectReview);
+app.use("/api/users", usersRouter);
 
-app.get("/api/reviews", selectReviews);
+app.use("/api/comments", commentsRouter);
 
-app.get("/api/reviews/:review_id/comments", selectReviewComments);
+app.use("/api/reviews", reviewsRouter);
 
-app.post("/api/reviews/:review_id/comments", addReviewComment);
-
-app.patch("/api/reviews/:review_id", updateReviewVotes);
-
-app.delete("/api/comments/:comment_id", removeComment);
-
-app.get("/api/users", selectAllUsers);
-
-app.get("/api", selectEndpoints);
+app.use("/api/categories", categoriesRouter);
 
 app.use(customErrorHandler);
 
