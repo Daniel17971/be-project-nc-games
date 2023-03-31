@@ -18,7 +18,7 @@ exports.fetchReview = (review_id) => {
           msg: "id does not exsist",
         });
       } else {
-        return data.rows;
+        return data.rows[0];
       }
     });
 };

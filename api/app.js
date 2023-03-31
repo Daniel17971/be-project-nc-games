@@ -1,24 +1,11 @@
 const express = require("express");
 const app = express();
-
-const {
-  selectAllCategories,
-} = require("./controllers/categories.controllers.js");
-const {
-  selectReview,
-  selectReviewComments,
-  selectReviews,
-  addReviewComment,
-  updateReviewVotes,
-} = require("./controllers/reviews.controllers.js");
 const {
   customErrorHandler,
   psqlErrorHandler,
   serverError,
 } = require("./errors/reviews.errors.js");
-const { removeComment } = require("./controllers/comments.controllers.js");
-const { selectAllUsers } = require("./controllers/users.controllers.js");
-const { selectEndpoints } = require("./controllers/api.controllers.js");
+
 const apiRouter = require("./routes/api-router.js");
 const usersRouter = require("./routes/users-router.js");
 const commentsRouter = require("./routes/comments-router.js");
