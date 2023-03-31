@@ -18,6 +18,7 @@ const {
 } = require("./errors/reviews.errors.js");
 const { removeComment } = require("./controllers/comments.controllers.js");
 const { selectAllUsers } = require("./controllers/users.controllers.js");
+const { selectEndpoints } = require("./controllers/api.controllers.js");
 
 app.use(express.json());
 
@@ -36,6 +37,8 @@ app.patch("/api/reviews/:review_id", updateReviewVotes);
 app.delete("/api/comments/:comment_id", removeComment);
 
 app.get("/api/users", selectAllUsers);
+
+app.get("/api", selectEndpoints);
 
 app.use(customErrorHandler);
 

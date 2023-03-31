@@ -34,6 +34,7 @@
   "GET /api/reviews/:review_id": {
     "description": "serves an array of a single review as specified by the id parameter",
     "queries": [],
+    "valid_id": "Any integer",
     "exampleResponse": {
       "review": [
         {
@@ -54,6 +55,7 @@
   "GET /api/reviews/:review_id/comments": {
     "description": "serves an array of comments associated with a particular review_id",
     "queries": [],
+    "valid_id": "Any integer",
     "exampleResponse": {
       "comments": [
         {
@@ -69,14 +71,20 @@
   "POST /api/reviews/:review_id/comments": {
     "description": "Adds a comment to an associated review by review_id",
     "queries": [],
+    "valid_id": "Any integer",
+    "sentRequest": {
+      "body": "This game was OK",
+      "username": "dan283"
+    },
     "exampleResponse": {
       "comments": [
         {
           "body": "This game was OK",
           "votes": 13,
-          "author": "bainesface",
+          "author": "dan283",
           "review_id": 4,
-          "created_at": "new Date(1511354613399)"
+          "created_at": "new Date(1511354613399)",
+          "comment_id": 8
         }
       ]
     }
@@ -84,6 +92,8 @@
   "PATCH /api/reviews/:review_id": {
     "description": "Add or subtracts votes from an exsisting review",
     "queries": [],
+    "valid_id": "Any integer",
+    "sentRequest": { "inc_votes": 3 },
     "exampleResponse": {
       "review": [
         {
@@ -97,6 +107,24 @@
           "created_at": "2021-01-18T10:00:20.514Z",
           "votes": 4,
           "comment_count": 0
+        }
+      ]
+    }
+  },
+  "DELETE /api/reviews/:review_id": {
+    "description": "deletes a review based on its unique review_id",
+    "queries": [],
+    "exampleResponse": {}
+  },
+  "GET api/users": {
+    "description": "returns an array of users as object",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "mallionaire",
+          "name": "haz",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
         }
       ]
     }
