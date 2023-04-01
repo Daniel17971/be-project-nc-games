@@ -4,13 +4,14 @@ const {
   selectReviewComments,
   addReviewComment,
   updateReviewVotes,
+  addReview,
 } = require("../controllers/reviews.controllers");
 
 const reviewsRouter = require("express").Router();
 
 reviewsRouter.route("/:review_id").get(selectReview).patch(updateReviewVotes);
 
-reviewsRouter.get("/", selectReviews);
+reviewsRouter.route("/").get(selectReviews).post(addReview);
 
 reviewsRouter
   .route("/:review_id/comments")

@@ -8,6 +8,7 @@ const {
   alterReviewVote,
   checkColumnExsists,
   checkCategoryExsists,
+  insertReview,
 } = require("../models/reviews.models.js");
 
 exports.selectReview = (req, res, next) => {
@@ -87,6 +88,17 @@ exports.updateReviewVotes = (req, res, next) => {
       const review = promise[1];
 
       res.status(200).send({ review });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.addReview = (req, res, next) => {
+  const reviewBody = req.body;
+  insertReview(reviewBody)
+    .then((review) => {
+      res.status(201).send({ review });
     })
     .catch((err) => {
       next(err);

@@ -533,6 +533,122 @@ describe("PATCH /api/comments/:comment_id", () => {
   });
 });
 
+describe("POST /api/reviews", () => {
+  it("201: posts a review and return the review with correct properties", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        title: "test-title",
+        designer: "test-desinger",
+        owner: "mallionaire",
+        review_img_url:
+          "https://notRealURL.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        review_body: "ok",
+        category: "euro game",
+      })
+      .expect(201)
+      .then((response) => {
+        const review = response.body.review;
+        expect(review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          category: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_body: expect.any(String),
+          review_img_url: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: expect.any(String),
+        });
+      });
+  });
+  it("201: post when non essential additional properties added  ", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        title: "test-title",
+        designer: "test-desinger",
+        owner: "mallionaire",
+        review_img_url:
+          "https://notRealURL.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        review_body: "ok",
+        category: "euro game",
+        notImportant: "this is not important",
+      })
+      .expect(201)
+      .then((response) => {
+        const review = response.body.review;
+        expect(review).toMatchObject({
+          review_id: expect.any(Number),
+          title: expect.any(String),
+          category: expect.any(String),
+          designer: expect.any(String),
+          owner: expect.any(String),
+          review_body: expect.any(String),
+          review_img_url: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: expect.any(String),
+        });
+      });
+  });
+  it("400: bad request when object with bad keys sent", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        title: "test-title",
+        designer: "test-desinger",
+        owner: "mallionaire",
+        review_img_url:
+          "https://notRealURL.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        review_body: "ok",
+        BadCategory: "euro game",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  it("400: bad request when invalid property", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        title: 1984,
+        designer: "test-desinger",
+        owner: "mallionaire",
+        review_img_url:
+          "https://notRealURL.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        review_body: "ok",
+        BadCategory: "euro game",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+  it("404: User does not exsist", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({
+        title: "test-title",
+        designer: "test-desinger",
+        owner: "NotAnUser",
+        review_img_url:
+          "https://notRealURL.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        review_body: "ok",
+        category: "euro game",
+      })
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({
+          status: 404,
+          msg: "user does not exsist",
+        });
+      });
+  });
+});
+
 afterAll(() => {
   connection.end();
 });
