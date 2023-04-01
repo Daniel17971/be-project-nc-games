@@ -34,9 +34,22 @@ function formatReviewsQuery(
   }
 }
 
-module.exports = { formatReviewsQuery };
+function formatPostReview(reviewBody) {
+  return format(
+    `INSERT INTO reviews
+  (title, designer, owner, review_img_url, review_body, category)
+  VALUES
+  (%L)
+  RETURNING *;`,
+    [
+      reviewBody.title,
+      reviewBody.designer,
+      reviewBody.owner,
+      reviewBody.review_img_url,
+      reviewBody.review_body,
+      reviewBody.category,
+    ]
+  );
+}
 
-`SELECT reviews.* 
-, count(comments.review_id) AS comment_count
-FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id 
-GROUP BY reviews.review_id ;`;
+module.exports = { formatReviewsQuery, formatPostReview };

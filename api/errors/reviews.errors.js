@@ -20,6 +20,11 @@ exports.customErrorHandler = (err, req, res, next) => {
     err.msg = "id does not exsist";
     const { status, msg } = err;
     res.status(404).send({ status, msg });
+  } else if (/users/.test(err.detail)) {
+    err.status = 404;
+    err.msg = "user does not exsist";
+    const { status, msg } = err;
+    res.status(404).send({ status, msg });
   } else {
     next(err);
   }

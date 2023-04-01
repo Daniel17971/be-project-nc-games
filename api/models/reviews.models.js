@@ -1,6 +1,6 @@
 const format = require("pg-format");
 const db = require("../../db/connection.js");
-const { formatReviewsQuery } = require("./models.utils.js");
+const { formatReviewsQuery, formatPostReview } = require("./models.utils.js");
 
 exports.fetchReview = (review_id) => {
   return db
@@ -152,6 +152,23 @@ exports.alterReviewVote = (votePatch, review_id) => {
   RETURNING *; `,
       [votePatch, review_id]
     )
+    .then((data) => {
+      return data.rows[0];
+    });
+};
+
+exports.insertReview = (reviewBody) => {
+  return db
+    .query(formatPostReview(reviewBody))
+    .then((data) => {
+      return db.query(
+        `SELECT reviews.* 
+    , count(comments.review_id) AS comment_count
+    FROM reviews LEFT JOIN comments ON reviews.review_id=comments.review_id WHERE reviews.review_id=$1
+    GROUP BY reviews.review_id ;`,
+        [data.rows[0].review_id]
+      );
+    })
     .then((data) => {
       return data.rows[0];
     });
