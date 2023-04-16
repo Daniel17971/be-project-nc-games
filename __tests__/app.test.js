@@ -113,7 +113,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/1/comments")
       .expect(200)
       .then((response) => {
-        const commentsArr = response.body.comments;
+        const commentsArr = response.body.comments.results;
 
         expect(commentsArr).toEqual([]);
       });
@@ -123,7 +123,9 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .get("/api/reviews/2/comments")
       .expect(200)
       .then((response) => {
-        const commentsArr = response.body.comments;
+        const commentsArr = response.body.comments.results;
+        console.log(commentsArr);
+
         expect(commentsArr).toBeInstanceOf(Array);
         commentsArr.forEach((element) => {
           expect(element.review_id).toBe(2);
@@ -136,6 +138,14 @@ describe("GET /api/reviews/:review_id/comments", () => {
             created_at: expect.any(String),
           });
         });
+      });
+  });
+  it("200: accepts pagination queries", () => {
+    return request(app)
+      .get("/api/reviews/2/comments?limit=1")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments.results.length).toBe(1);
       });
   });
   it("404: return 404 and message when id is not found", () => {
