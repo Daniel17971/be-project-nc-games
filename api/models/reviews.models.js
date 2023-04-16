@@ -1,6 +1,7 @@
 const format = require("pg-format");
 const db = require("../../db/connection.js");
 const { formatReviewsQuery, formatPostReview } = require("./models.utils.js");
+const { paginatedResults } = require("../../db/seeds/utils.js");
 
 exports.fetchReview = (review_id) => {
   return db
@@ -24,7 +25,7 @@ exports.fetchReview = (review_id) => {
 };
 
 exports.fetchOrderedReviews = (query) => {
-  if (Object.keys(query)[0] === "order") {
+  if (query.order) {
     return db.query(formatReviewsQuery()).then((data) => {
       if (data.rowCount === 0) {
         return Promise.reject({
@@ -32,9 +33,9 @@ exports.fetchOrderedReviews = (query) => {
           msg: "id does not exsist",
         });
       }
-      return data.rows;
+      return paginatedResults(data.rows, query);
     });
-  } else if (Object.keys(query)[0] === "sort_by") {
+  } else if (query.sort_by) {
     return db.query(formatReviewsQuery(query.sort_by, "DESC")).then((data) => {
       if (data.rowCount === 0) {
         return Promise.reject({
@@ -42,9 +43,9 @@ exports.fetchOrderedReviews = (query) => {
           msg: "id does not exsist",
         });
       }
-      return data.rows;
+      return paginatedResults(data.rows, query);
     });
-  } else if (Object.keys(query)[0] === "category") {
+  } else if (query.category) {
     return db
       .query(formatReviewsQuery("created_at", "DESC", false), [query.category])
       .then((data) => {
@@ -54,8 +55,18 @@ exports.fetchOrderedReviews = (query) => {
             msg: "id does not exsist",
           });
         }
-        return data.rows;
+        return paginatedResults(data.rows, query);
       });
+  } else if (query.page || query.limit) {
+    return db.query(formatReviewsQuery("created_at", "DESC")).then((data) => {
+      if (data.rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "id does not exsist",
+        });
+      }
+      return paginatedResults(data.rows, query);
+    });
   } else if (Object.keys(query).length === 0) {
     return db.query(formatReviewsQuery("created_at", "DESC")).then((data) => {
       if (data.rowCount === 0) {
@@ -64,7 +75,7 @@ exports.fetchOrderedReviews = (query) => {
           msg: "id does not exsist",
         });
       }
-      return data.rows;
+      return paginatedResults(data.rows, query);
     });
   }
 };
