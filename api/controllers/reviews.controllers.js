@@ -9,6 +9,7 @@ const {
   checkColumnExsists,
   checkCategoryExsists,
   insertReview,
+  deleteReview,
 } = require("../models/reviews.models.js");
 
 exports.selectReview = (req, res, next) => {
@@ -100,6 +101,20 @@ exports.addReview = (req, res, next) => {
   insertReview(reviewBody)
     .then((review) => {
       res.status(201).send({ review });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.removeReview = (req, res, next) => {
+  const review_id = req.params.review_id;
+  Promise.all([checkExsists("reviews", "review_id", review_id)])
+    .then(() => {
+      Promise.all([deleteReview(review_id)]);
+    })
+    .then(() => {
+      res.status(204).send();
     })
     .catch((err) => {
       next(err);
