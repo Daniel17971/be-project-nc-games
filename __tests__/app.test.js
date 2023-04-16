@@ -124,7 +124,6 @@ describe("GET /api/reviews/:review_id/comments", () => {
       .expect(200)
       .then((response) => {
         const commentsArr = response.body.comments.results;
-        console.log(commentsArr);
 
         expect(commentsArr).toBeInstanceOf(Array);
         commentsArr.forEach((element) => {
