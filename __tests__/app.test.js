@@ -682,6 +682,27 @@ describe("POST /api/reviews", () => {
       });
   });
 });
+describe("POST /api/category", () => {
+  it("200: post a new category and returns that category", () => {
+    return request(app)
+      .post("/api/categories")
+      .send({ slug: "test cat", description: "test desciption" })
+      .expect(201)
+      .then((response) => {
+        const newCategory = response.body.category;
+        expect(newCategory).toEqual(newCategory);
+      });
+  });
+  it("400: bad request when incorrect object sent", () => {
+    return request(app)
+      .post("/api/reviews")
+      .send({ namedWrong: "test cat", description: "test desciption" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual({ msg: "Bad Request" });
+      });
+  });
+});
 
 afterAll(() => {
   connection.end();
