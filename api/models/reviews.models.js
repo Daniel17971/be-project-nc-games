@@ -80,11 +80,11 @@ exports.fetchOrderedReviews = (query) => {
   }
 };
 
-exports.fetchReviewComments = (review_id) => {
+exports.fetchReviewComments = (review_id, query) => {
   return db
     .query(`SELECT * FROM comments WHERE review_id=$1`, [review_id])
     .then((data) => {
-      return data.rows;
+      return paginatedResults(data.rows, query);
     });
 };
 

@@ -37,7 +37,8 @@ exports.selectReviews = (req, res, next) => {
 
 exports.selectReviewComments = (req, res, next) => {
   const { review_id } = req.params;
-  fetchReviewComments(review_id)
+  const query = req.query;
+  fetchReviewComments(review_id, query)
     .then((comments) => {
       return Promise.all([
         checkExsists("reviews", "review_id", review_id),
