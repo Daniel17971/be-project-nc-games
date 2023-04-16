@@ -432,6 +432,18 @@ describe("GET /api/reviews?query=value", () => {
         expect(reviewPaginated.length).toBe(5);
       });
   });
+  it("200: page and limit queries work for big limits", () => {
+    return request(app)
+      .get("/api/reviews?limit=100")
+      .expect(200)
+      .then((response) => {
+        const reviewPaginated = response.body.reviews.results;
+        expect(response.body.reviews.total_count).toBe(
+          testData.reviewData.length
+        );
+        expect(reviewPaginated.length).toBe(testData.reviewData.length);
+      });
+  });
   it("404: not found when query asks for not real category etc", () => {
     return request(app)
       .get("/api/reviews?category=notreal")
