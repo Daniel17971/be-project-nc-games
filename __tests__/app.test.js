@@ -80,8 +80,9 @@ describe("GET /api/reviews", () => {
       .get("/api/reviews")
       .expect(200)
       .then((response) => {
-        const reviews = response.body.reviews;
-        expect(reviews.length).toBe(testData.reviewData.length);
+        const reviews = response.body.reviews.results;
+
+        expect(reviews.length).toBe(10);
         reviews.forEach((element) => {
           expect(element).toMatchObject({
             review_id: expect.any(Number),
@@ -384,7 +385,7 @@ describe("GET /api/reviews?query=value", () => {
       .get("/api/reviews?category=dexterity")
       .expect(200)
       .then((response) => {
-        const reviews = response.body.reviews;
+        const reviews = response.body.reviews.results;
         expect(!reviews.length).toBe(false);
         let flag = true;
         reviews.forEach((review) => {
@@ -400,7 +401,7 @@ describe("GET /api/reviews?query=value", () => {
       .get("/api/reviews?sort_by=votes")
       .expect(200)
       .then((response) => {
-        const reviews = response.body.reviews;
+        const reviews = response.body.reviews.results;
         expect(reviews).toBeSortedBy("votes", {
           descending: true,
           coerce: true,
@@ -412,11 +413,35 @@ describe("GET /api/reviews?query=value", () => {
       .get("/api/reviews?order=asc")
       .expect(200)
       .then((response) => {
-        const reviews = response.body.reviews;
+        const reviews = response.body.reviews.results;
         expect(reviews).toBeSortedBy("created_at", {
           descending: false,
           coerce: true,
         });
+      });
+  });
+  it("200: page and limit queries work", () => {
+    return request(app)
+      .get("/api/reviews?page=2&limit=5")
+      .expect(200)
+      .then((response) => {
+        const reviewPaginated = response.body.reviews.results;
+        expect(response.body.reviews.total_count).toBe(
+          testData.reviewData.length
+        );
+        expect(reviewPaginated.length).toBe(5);
+      });
+  });
+  it("200: page and limit queries work for big limits", () => {
+    return request(app)
+      .get("/api/reviews?limit=100")
+      .expect(200)
+      .then((response) => {
+        const reviewPaginated = response.body.reviews.results;
+        expect(response.body.reviews.total_count).toBe(
+          testData.reviewData.length
+        );
+        expect(reviewPaginated.length).toBe(testData.reviewData.length);
       });
   });
   it("404: not found when query asks for not real category etc", () => {
