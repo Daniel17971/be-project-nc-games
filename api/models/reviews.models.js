@@ -184,3 +184,9 @@ exports.insertReview = (reviewBody) => {
       return data.rows[0];
     });
 };
+
+exports.deleteReview = (review_id) => {
+  return db.query("DELETE FROM reviews WHERE review_id=$1 RETURNING *;", [
+    review_id,
+  ]);
+};
