@@ -5,12 +5,14 @@ const {
   psqlErrorHandler,
   serverError,
 } = require("./errors/reviews.errors.js");
-
+const cors = require("cors");
 const apiRouter = require("./routes/api-router.js");
 const usersRouter = require("./routes/users-router.js");
 const commentsRouter = require("./routes/comments-router.js");
 const reviewsRouter = require("./routes/reviews-router.js");
 const categoriesRouter = require("./routes/categories-router.js");
+
+app.use(cors());
 
 app.use(express.json());
 
