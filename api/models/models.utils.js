@@ -1,8 +1,8 @@
 const format = require("pg-format");
 function formatReviewsQuery(
   orderCategory = "created_at",
-  order = "ASC",
-  defaultRequest = "true"
+  order = "DESC",
+  defaultRequest = true
 ) {
   if (defaultRequest) {
     const queryString = format(
