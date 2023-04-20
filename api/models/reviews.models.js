@@ -25,29 +25,35 @@ exports.fetchReview = (review_id) => {
 };
 
 exports.fetchOrderedReviews = (query) => {
-  if (query.order) {
-    return db.query(formatReviewsQuery()).then((data) => {
-      if (data.rowCount === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "id does not exsist",
-        });
-      }
-      return paginatedResults(data.rows, query);
-    });
-  } else if (query.sort_by) {
-    return db.query(formatReviewsQuery(query.sort_by, "DESC")).then((data) => {
-      if (data.rowCount === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "id does not exsist",
-        });
-      }
-      return paginatedResults(data.rows, query);
-    });
-  } else if (query.category) {
+  if (query.category) {
     return db
-      .query(formatReviewsQuery("created_at", "DESC", false), [query.category])
+      .query(formatReviewsQuery(query.sort_by, query.order, false), [
+        query.category,
+      ])
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        }
+        return paginatedResults(data.rows, query);
+      });
+  } else if (query.sort_by) {
+    return db
+      .query(formatReviewsQuery(query.sort_by, query.order))
+      .then((data) => {
+        if (data.rowCount === 0) {
+          return Promise.reject({
+            status: 404,
+            msg: "id does not exsist",
+          });
+        }
+        return paginatedResults(data.rows, query);
+      });
+  } else if (query.order) {
+    return db
+      .query(formatReviewsQuery(query.category, query.order))
       .then((data) => {
         if (data.rowCount === 0) {
           return Promise.reject({

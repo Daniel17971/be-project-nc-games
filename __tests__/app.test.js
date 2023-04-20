@@ -391,20 +391,22 @@ describe("GET /api/users", () => {
 describe("GET /api/reviews?query=value", () => {
   it("200: can select all reviews for a category /api/reviews?category=dexterity", () => {
     return request(app)
-      .get("/api/reviews?category=dexterity")
+      .get("/api/reviews?category=euro game&sort_by=votes")
       .expect(200)
       .then((response) => {
         const reviews = response.body.reviews.results;
+
         expect(!reviews.length).toBe(false);
         let flag = true;
         reviews.forEach((review) => {
-          if (review.category !== "dexterity") {
+          if (review.category !== "euro game") {
             flag = false;
           }
         });
         expect(flag).toBe(true);
       });
   });
+
   it("200: sort_by query sorts by any valid column, defaults to date", () => {
     return request(app)
       .get("/api/reviews?sort_by=votes")

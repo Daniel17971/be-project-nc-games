@@ -49,7 +49,9 @@ exports.paginatedResults = (model, query) => {
       limit: limit,
     };
   }
+
   results.total_count = model.length;
   results.results = model.slice(startIndex, endIndex);
+
   return results;
 };
